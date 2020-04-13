@@ -1,6 +1,6 @@
 # Octoprint API for node
 
-This class provides methods for interacting with an Octoprint enabled 3D printer. You can get retrieve the printer/tool status, as well as a list of cameras that have been enabled using the [Multicam plugin](https://github.com/mikedmor/OctoPrint_MultiCam).
+This class provides methods for interacting with an Octoprint enabled 3D printer. You can retrieve the printer/tool status, as well as a list of cameras that have been enabled using the [Multicam plugin](https://github.com/mikedmor/OctoPrint_MultiCam).
 
 ### Example Usage
 
