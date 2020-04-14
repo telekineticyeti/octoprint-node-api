@@ -8,10 +8,6 @@ export declare class OctoprintApi {
     getSettings(): Promise<any>;
     getCameras(): Promise<ICamera[]>;
     getCamera(cameraId: number): Promise<any>;
-    /**
-     * Build a get request options object to query the octoprint api
-     * @param path Api path to query
-     */
     private buildGetRequest;
 }
 export interface IOctoprintGetRequest {

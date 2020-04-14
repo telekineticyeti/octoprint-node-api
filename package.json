@@ -6,15 +6,17 @@
   "dependencies": {
     "ramda": "^0.27.0"
   },
+  "private": true,
   "files": [
     "dist/**/*"
   ],
+  "repository": "github:telekineticyeti/octoprint-node-api",
+  "types": "dist/octoprint-api.d",
   "devDependencies": {
     "@types/node": "^13.11.1",
     "@types/ramda": "^0.27.3",
     "clean-webpack-plugin": "^3.0.0",
     "cross-fetch": "^3.0.4",
-    "request-promise-native": "^1.0.8",
     "ts-loader": "^6.2.2",
     "ts-node": "^8.8.2",
     "tslint": "^6.1.1",
