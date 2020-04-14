@@ -1,6 +1,13 @@
 import {has} from 'ramda';
 import fetch from 'cross-fetch';
 import url from 'url';
+import {
+  IPrinterStatus,
+  IPrinterTools,
+  ICamera,
+  IOctoprintGetRequest,
+  IApiVersion,
+} from './interfaces';
 
 export class OctoprintApi {
   public apiKey: string;
@@ -11,21 +18,30 @@ export class OctoprintApi {
     this.apiPath = path;
   }
 
-  public async getVersion(): Promise<any> {
+  /**
+   * Return the API version of the Octoprint server.
+   */
+  public async getVersion(): Promise<IApiVersion> {
     const request = this.buildGetRequest('version');
 
-    return await fetch(request.url, request.options)
-      .then(response => response)
-      .catch(error => error);
+    return new Promise((resolve, reject) => {
+      fetch(request.url, request.options)
+        .then(response => resolve(response.json()))
+        .catch(error => reject(error));
+    });
   }
 
+  /**
+   * Return basic status of the printer, including a list of tools
+   * and their tempratures in addition to any operational flags the
+   * printer has emitted.
+   */
   public getStatus(): Promise<IPrinterStatus> {
     const request = this.buildGetRequest('printer?history=false,exclude=sd');
     return new Promise((resolve, reject) => {
       fetch(request.url, request.options)
         .then(async response => {
           const responseObj = await response.json();
-          const tools = this.getTools(responseObj.temperature);
 
           const status: IPrinterStatus = {
             flags: {
@@ -41,10 +57,10 @@ export class OctoprintApi {
               resuming: responseObj.state.flags.resuming,
             },
             text: responseObj.state.text,
-            tools,
+            tools: this._getTools(responseObj.temperature),
             bed: {
-              targetTemp: responseObj.temperature.bed.target,
-              actualTemp: responseObj.temperature.bed.actual,
+              target: responseObj.temperature.bed.target,
+              actual: responseObj.temperature.bed.actual,
               offset: responseObj.temperature.bed.offset,
             },
           };
@@ -54,20 +70,24 @@ export class OctoprintApi {
     });
   }
 
-  public getTools(data: any): IPrinterTool[] {
-    const tools: IPrinterTool[] = [];
+  /**
+   * Returns only tools that have the name 'tool', returning an
+   * object without beds.
+   * @param toolDict Object containing tools.
+   */
+  private _getTools(toolDict: IPrinterTools): IPrinterTools {
+    const tools: IPrinterTools = {};
 
     const retrieveTool = (toolNumber: number = 0): void => {
       const toolName = `tool${toolNumber}`;
       const hasTool = has(toolName);
 
-      if (hasTool(data)) {
-        tools.push({
-          name: toolName,
-          targetTemp: data[toolName].target,
-          actualTemp: data[toolName].actual,
-          offset: data[toolName].offset,
-        });
+      if (hasTool(toolDict)) {
+        tools[toolName] = {
+          target: toolDict[toolName].target,
+          actual: toolDict[toolName].actual,
+          offset: toolDict[toolName].offset,
+        };
         retrieveTool(toolNumber + 1);
       }
     };
@@ -75,14 +95,10 @@ export class OctoprintApi {
     return tools;
   }
 
-  public async getSettings(): Promise<any> {
-    const request = this.buildGetRequest('settings');
-
-    return await fetch(request.url, request.options)
-      .then(response => response)
-      .catch(error => error);
-  }
-
+  /**
+   * Retrieve cameras. If the multicam plugin is installed,
+   * all listed cameras are retrieved.
+   */
   public getCameras(): Promise<ICamera[]> {
     const request = this.buildGetRequest('settings');
 
@@ -90,7 +106,6 @@ export class OctoprintApi {
       fetch(request.url, request.options)
         .then(async response => {
           const responseObj = await response.json();
-
           const hasMulticamPlugin = has('multicam');
           const cameras: ICamera[] = [];
 
@@ -114,7 +129,11 @@ export class OctoprintApi {
     });
   }
 
-  public getCamera(cameraId: number): Promise<any> {
+  /**
+   * Retrieve specific camera by index.
+   * @param cameraId index of camera
+   */
+  public getCamera(cameraId: number): Promise<ICamera> {
     return new Promise((resolve, reject) => {
       if (isNaN(cameraId)) {
         reject('Invalid camera ID - must be a integer');
@@ -126,8 +145,24 @@ export class OctoprintApi {
           reject('Invalid camera ID. No camera exists with that index.');
           return;
         }
+        console.log(r[cameraId]);
         resolve(r[cameraId]);
       });
+    });
+  }
+
+  /**
+   * WIP
+   */
+  public getJobInfo(): Promise<any> {
+    const request = this.buildGetRequest('job');
+    return new Promise((resolve, reject) => {
+      fetch(request.url, request.options)
+        .then(async response => {
+          const json = await response.json();
+          resolve(json);
+        })
+        .catch(error => reject(error));
     });
   }
 
@@ -146,47 +181,4 @@ export class OctoprintApi {
       },
     };
   }
-}
-
-export interface IOctoprintGetRequest {
-  url: string;
-  options: {
-    headers: {
-      [name: string]: string;
-    };
-  };
-}
-
-export interface IPrinterTool {
-  name: string;
-  targetTemp: number;
-  actualTemp: number;
-  offset: number;
-}
-
-export interface IPrinterStatus {
-  flags: {
-    cancelling: boolean;
-    closedOrError: boolean;
-    error: boolean;
-    finishing: boolean;
-    operational: boolean;
-    paused: boolean;
-    pausing: boolean;
-    printing: boolean;
-    ready: boolean;
-    resuming: boolean;
-  };
-  text: string;
-  tools: IPrinterTool[];
-  bed: {
-    targetTemp: number;
-    actualTemp: number;
-    offset: number;
-  };
-}
-
-export interface ICamera {
-  name: string;
-  url: string;
 }
