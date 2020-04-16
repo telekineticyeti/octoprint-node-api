@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "description": "Octoprint API for node",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "ramda": "^0.27.0"
   },
@@ -10,7 +11,6 @@
     "dist/**/*"
   ],
   "repository": "github:telekineticyeti/octoprint-node-api",
-  "types": "dist/octoprint-api.d",
   "devDependencies": {
     "@types/node": "^13.11.1",
     "@types/ramda": "^0.27.3",
