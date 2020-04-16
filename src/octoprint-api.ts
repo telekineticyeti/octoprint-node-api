@@ -7,6 +7,7 @@ import {
   ICamera,
   IOctoprintGetRequest,
   IApiVersion,
+  IJob,
 } from './interfaces';
 
 export class OctoprintApi {
@@ -152,10 +153,31 @@ export class OctoprintApi {
   }
 
   /**
-   * WIP
+   * Return the status of a currently running job
    */
-  public getJobInfo(): Promise<any> {
+  public getJobInfo(): Promise<IJob> {
     const request = this.buildGetRequest('job');
+    return new Promise((resolve, reject) => {
+      fetch(request.url, request.options)
+        .then(async response => {
+          const json = await response.json();
+          resolve(json);
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+  public getLogs(): Promise<any> {
+    const request = {
+      url: `${this.apiPath}/plugin/logging/logs`,
+      options: {
+        headers: {
+          'X-Api-Key': `${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    };
+
     return new Promise((resolve, reject) => {
       fetch(request.url, request.options)
         .then(async response => {
