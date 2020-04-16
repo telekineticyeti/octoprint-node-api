@@ -1,5 +1,4 @@
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TSLintPlugin = require('tslint-webpack-plugin');
 const {NODE_ENV = 'production'} = process.env;
@@ -32,5 +31,4 @@ module.exports = {
       files: ['./src/**/*.ts'],
     }),
   ],
-  externals: [nodeExternals()],
 };

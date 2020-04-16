@@ -1,11 +1,14 @@
 {
   "name": "octoprint-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Octoprint API for node",
   "main": "dist/index.js",
   "dependencies": {
     "ramda": "^0.27.0"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "repository": "github:telekineticyeti/octoprint-node-api",
   "types": "dist/octoprint-api.d",
   "devDependencies": {
