@@ -6,9 +6,6 @@
   "dependencies": {
     "ramda": "^0.27.0"
   },
-  "files": [
-    "dist/**/*"
-  ],
   "repository": "github:telekineticyeti/octoprint-node-api",
   "types": "dist/octoprint-api.d",
   "devDependencies": {
@@ -28,6 +25,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "prepare": "npm run build",
     "start": "webpack --watch"
   },
   "author": "paul@mindres.in",

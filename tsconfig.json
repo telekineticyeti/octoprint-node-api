@@ -1,12 +1,9 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist",
     "sourceMap": false,
     "declaration": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
     "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
@@ -18,9 +15,9 @@
     "pretty": false,
     "strict": true,
     "target": "es2015",
+    "module": "commonjs",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2015"],
-    "removeComments": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -28,5 +25,5 @@
     "esModuleInterop": true
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.ts"]
+  "include": ["src/index.ts"]
 }

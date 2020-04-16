@@ -5,7 +5,7 @@ const TSLintPlugin = require('tslint-webpack-plugin');
 const {NODE_ENV = 'production'} = process.env;
 
 module.exports = {
-  entry: path.join(__dirname, '/src/octoprint-api.ts'),
+  entry: path.join(__dirname, '/src/index.ts'),
   mode: NODE_ENV,
   target: 'node',
   output: {
